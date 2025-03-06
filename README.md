@@ -1,37 +1,83 @@
 # MDP REPRESENTATION
 
 ## AIM:
-Write your aim here
+The aim of this experiment is to create a Markov Decision Process (MDP) representation and implement it in Python to model the decision-making process in a Traffic signal system.
 
-## PROBLEM STATEMENT:
+## PROBLEM STATEMENT: 
 
 ### Problem Description
-Write your answer here
+The problem involves modeling a traffic signal system as a Markov Decision Process (MDP). The traffic signal transitions through different states (Red, Yellow, Green, Blinking Red, and Flashing Green) based on the actions taken by the system. The objective is to understand the transition probabilities and rewards associated with each state-action pair.
 
 ### State Space
-Write your answer here
+The system consists of the following states:
+
+0: Red Light (Stopped)
+
+1: Yellow Light (Ready)
+
+2: Green Light (Walking)
+
+3: Blinking Red Light (Collapsed)
+
+4: Flashing Green Light (Running - Goal)
 
 ### Sample State
-Write your answer here
+A sample state could be 2, which represents the Green Light (Walking) state where pedestrians are allowed to cross.
 
 ### Action Space
-Write your answer here
+Each state can have different actions that result in transitions:
+
+0: Stay in the current state.
+
+1: Move forward in the traffic light cycle.
+
+2: Move left (return to a previous state if applicable).
 
 ### Sample Action
-Write your answer here
+If in state 2 (Green Light), taking action 1 (Right) moves the system to state 4 (Flashing Green) with a probability of 0.6 and stays in 2 with a probability of 0.4.
 
 ### Reward Function
-Write your answer here
+1. Transitioning to the goal state (Flashing Green) yields a reward of 1.
+2. Other transitions provide a reward of 0.0.
+3. If the system moves to the Blinking Red state (Failure), it might stay stuck with negative consequences.
 
 ### Graphical Representation
-Write your answer here
+
+![graph_mdp](https://github.com/user-attachments/assets/6a6db272-a470-4738-89f4-b3e5b5aeccbc)
+
+
 
 ## PYTHON REPRESENTATION:
-Write your code here
+```
+p = {
+    0: {  # Red Light (Stopped)
+        1: [(0.6, 1, 0.0, False), (0.4, 0, 0.0, False)],  # Proceed → Yellow Light
+        0: [(0.6, 0, 0.0, False), (0.4, 1, 0.0, False)]   # Stay → Remain at Red
+    },
+    1: {  # Yellow Light (Ready)
+        1: [(0.6, 2, 0.0, False), (0.4, 0, 0.0, False)],  # Proceed → Green Light
+        0: [(0.6, 0, 0.0, False), (0.4, 2, 0.0, False)]   # Stay → Might go back or proceed
+    },
+    2: {  # Green Light (Walking)
+        2: [(0.6, 1, 0.0, False), (0.4, 2, 0.0, False)],  # Left → Go back to Yellow Light
+        1: [(0.6, 4, 1, True), (0.4, 2, 0.0, False)],  # Right → Reach Flashing Green (Success)
+        0: [(0.6, 3, 0.0, True), (0.4, 2, 0.0, False)]  # Up → Blinking Red (Failure)
+    },
+    3: {  # Blinking Red Light (Collapsed)
+        1: [(0.6, 2, 0.0, False), (0.4, 3, 0.0, False)],  # Try to recover → Green
+        0: [(0.6, 3, 0.0, True), (0.4, 2, 0.0, False)]   # Stay stuck
+    },
+    4: {  # Flashing Green Light (Running - Goal)
+        1: [(0.6, 4, 1, True), (0.4, 2, 0.0, False)],  # Stay at Flashing Green (Success)
+        0: [(0.6, 2, 0.0, False), (0.4, 4, 1, True)]   # Move back to Green Light
+    }
+}
+```
 
 ## OUTPUT:
-Write your Python output here
+![traffic_mdp](https://github.com/user-attachments/assets/5c594e06-238d-4f0a-923b-4d265718b76d)
+
 
 ## RESULT:
-Write your output here
+The Markov Decision Process (MDP) has been successfully represented using Python dictionaries. Each state-action pair contains information about possible transitions, transition probabilities, associated rewards, and whether the next state is terminal or not. This representation can be used for further analysis and decision-making algorithms such as reinforcement learning.
 
